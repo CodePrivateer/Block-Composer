@@ -11,7 +11,7 @@ LEVEL_POINTS = 250
 LEVEL_LINES = 4
 LEVEL_MAX = 5
 
-# Erstellen Sie einen zus�tzlichen Bereich f�r die Anzeige von Punkten und Highscore
+# Erstellen Sie einen zusätzlichen Bereich für die Anzeige von Punkten und Highscore
 SCORE_AREA_WIDTH = 250
 
 # Blocks
@@ -92,7 +92,7 @@ class GameField:
                                       BLOCK_SIZE-2,
                                       BLOCK_SIZE-2))
         
-    def reset_field(self):  # Methode zum Zur�cksetzen des Spielfelds
+    def reset_field(self):  # Methode zum Zurücksetzen des Spielfelds
             self.field = [[None for _ in range(SCREEN_WIDTH // BLOCK_SIZE)] for _ in range(SCREEN_HEIGHT // BLOCK_SIZE)]
         
     def print_field(self):
@@ -104,14 +104,14 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH + SCORE_AREA_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
-# Erstellen Sie eine Liste von Bl�cken und fügen Sie den ersten Block hinzu
+# Erstellen Sie eine Liste von Blöcken und fügen Sie den ersten Block hinzu
 game_field = GameField()  # Erstellen Sie ein GameField-Objekt
 blocks = [Block(5)]
 
 def draw_surface(s_width, s_height, alpha, color, pos_x, pos_y):
     s = pygame.Surface((s_width, s_height))  # Erstellen Sie eine Oberfläche
     s.set_alpha(alpha)  # Stellen Sie die Transparenz auf 50%
-    s.fill(color)  # F�llen Sie die Oberfläche mit Dunkelblau
+    s.fill(color)  # Füllen Sie die Oberfläche mit Dunkelblau
     screen.blit(s, (pos_x,pos_y))  # Blit die Oberfläche auf den Bildschirm
 
 def draw_text(text, size, color, x, y, centered=True):
@@ -130,9 +130,15 @@ def game_over_screen():
 def score_screen(points, highscore, lines, level):
     draw_surface(SCORE_AREA_WIDTH, SCREEN_HEIGHT, 128, (0,0,128), SCREEN_WIDTH ,0)
     draw_text(str(points).zfill(4) + " Points", 36,(200,200,200),SCREEN_WIDTH +10 ,10 ,centered=False)
-    draw_text(str(highscore).zfill(4) + " Highscore",36,(255,200,200),SCREEN_WIDTH +10 ,50 ,centered=False)
-    draw_text(str(lines).zfill(4) + " Lines",36,(255,200,200),SCREEN_WIDTH +10 ,90 ,centered=False)
-    draw_text(str(level).zfill(4) + " Level",36,(255,200,200),SCREEN_WIDTH +10 ,130 ,centered=False)
+    draw_text(str(lines).zfill(4) + " Lines",36,(200,200,200),SCREEN_WIDTH +10 ,50 ,centered=False)
+    draw_text(str(level).zfill(4) + " Level",36,(200,200,200),SCREEN_WIDTH +10 ,90 ,centered=False)
+    draw_text(str(highscore).zfill(4) + " Highscore",36,(255,200,200),SCREEN_WIDTH +10 ,130 ,centered=False)
+    draw_text("Left Arrow > Shift left",24,(200,200,200),SCREEN_WIDTH +10 ,210 ,centered=False)
+    draw_text("Right Arrow > Shift Right",24,(200,200,200),SCREEN_WIDTH +10 ,250 ,centered=False)
+    draw_text("Down Arrow Key > Fast place",24,(200,200,200),SCREEN_WIDTH +10 ,290 ,centered=False)
+    draw_text("Space Key > rotate",24,(200,200,200),SCREEN_WIDTH +10 ,330 ,centered=False)
+    draw_text("'p' Key Pause",24,(200,200,200),SCREEN_WIDTH +10 ,370 ,centered=False)
+    draw_text("'q' Quit Game ",24,(200,200,200),SCREEN_WIDTH +10 ,410 ,centered=False)
 
 def pause_screen():
     draw_surface(SCREEN_WIDTH, SCREEN_HEIGHT, 128,(0,0,128),0 ,0)
