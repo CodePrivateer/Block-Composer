@@ -1,6 +1,7 @@
 import pygame
 import random
 import time
+import webbrowser
 
 # Spielkonfiguration
 SCREEN_WIDTH, SCREEN_HEIGHT = 400, 600
@@ -10,6 +11,7 @@ POINTS_ROW = 20
 LEVEL_POINTS = 250
 LEVEL_LINES = 4
 LEVEL_MAX = 5
+link_rect = None
 
 # Erstellen Sie einen zusätzlichen Bereich für die Anzeige von Punkten und Highscore
 SCORE_AREA_WIDTH = 250
@@ -121,6 +123,17 @@ def draw_text(text, size, color, x, y, centered=True):
         screen.blit(text_surface, (x - text_surface.get_width() // 2, y - text_surface.get_height() // 2))
     else:
         screen.blit(text_surface, (x, y))
+        
+def draw_link(text, size, color, x, y, url, centered=True):
+    font = pygame.font.Font(None, size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    if centered:
+        text_rect.center = (x, y)
+    else:
+        text_rect.topleft = (x, y)
+    screen.blit(text_surface, text_rect)
+    return text_rect  # Rückgabe des Rechtecks für Kollisionserkennung
 
 def game_over_screen():
     draw_surface(SCREEN_WIDTH, SCREEN_HEIGHT, 128, (0,0,128), 0, 0)
@@ -128,6 +141,7 @@ def game_over_screen():
     draw_text("Press key to play", 36, (255, 255, 255), SCREEN_WIDTH // 2 , SCREEN_HEIGHT // 2)
 
 def score_screen(points, highscore, lines, level):
+    global link_rect  # Deklarieren Sie link_rect als global innerhalb der Funktion
     draw_surface(SCORE_AREA_WIDTH, SCREEN_HEIGHT, 128, (0,0,128), SCREEN_WIDTH ,0)
     draw_text(str(points).zfill(4) + " Points", 36,(200,200,200),SCREEN_WIDTH +10 ,10 ,centered=False)
     draw_text(str(lines).zfill(4) + " Lines",36,(200,200,200),SCREEN_WIDTH +10 ,50 ,centered=False)
@@ -139,6 +153,7 @@ def score_screen(points, highscore, lines, level):
     draw_text("Space Key > rotate",24,(200,200,200),SCREEN_WIDTH +10 ,330 ,centered=False)
     draw_text("'p' Key Pause",24,(200,200,200),SCREEN_WIDTH +10 ,370 ,centered=False)
     draw_text("'q' Quit Game ",24,(200,200,200),SCREEN_WIDTH +10 ,410 ,centered=False)
+    link_rect = draw_link("Block-Composer on Github", 16, (200,200,200), SCREEN_WIDTH +10 ,530 , "https://github.com/CodePrivateer/Block-Composer", centered=False)
 
 def pause_screen():
     draw_surface(SCREEN_WIDTH, SCREEN_HEIGHT, 128,(0,0,128),0 ,0)
@@ -147,7 +162,7 @@ def pause_screen():
 
 def start_screen():
     draw_surface(SCREEN_WIDTH ,SCREEN_HEIGHT ,128 ,(0 ,0 ,128) ,0 ,0)
-    draw_text("Block-Composer",72 ,(255 ,255 ,255) ,SCREEN_WIDTH //2 ,SCREEN_HEIGHT //4)
+    draw_text("Block-Composer",64 ,(255 ,255 ,255) ,SCREEN_WIDTH //2 ,SCREEN_HEIGHT //4)
     draw_text("Press key to play",36 ,(255 ,255 ,255) ,SCREEN_WIDTH //2 ,SCREEN_HEIGHT //2)
 
 def quit_screen():
@@ -228,6 +243,9 @@ def spiel():
                         return  # Beenden Sie die Funktion
                     elif event.type == pygame.KEYDOWN:  # Wenn das Ereignis ein Tastendruck ist
                         start = not start
+                    elif event.type == pygame.MOUSEBUTTONDOWN:  # Wenn das Ereignis ein Mausklick ist
+                        if link_rect.collidepoint(pygame.mouse.get_pos()):  # Wenn der Mausklick innerhalb des link_rect ist
+                            webbrowser.open("https://github.com/CodePrivateer/Block-Composer")  # Öffnen Sie den Webbrowser mit der angegebenen URL
                 if start:
                     break
             start_timer = False
@@ -264,10 +282,12 @@ def spiel():
                         if blocks[-1].collides(game_field):  # überprüfen Sie, ob der Block mit dem Spielfeld kollidiert
                             blocks[-1].column -= 1  # Wenn ja, bewegen Sie den Block eine Spalte nach links zurück
                 elif event.key == pygame.K_SPACE:  # Wenn die gedrückte Taste die Leertaste ist
-                    blocks[-1].rotate(game_field)  # Drehen Sie den Block und �bergeben Sie das Spielfeld an die rotate-Methode zur Kollisionsprüfung
+                    blocks[-1].rotate(game_field)  # Drehen Sie den Block und übergeben Sie das Spielfeld an die rotate-Methode zur Kollisionsprüfung
                 elif event.key == pygame.K_DOWN:  # Wenn die gedrückte Taste die Pfeiltaste nach unten ist
                     speed = 10 * level  # Erhöhen Sie die Geschwindigkeit, mit der der Block fällt
-
+            elif event.type == pygame.MOUSEBUTTONDOWN:  # Wenn das Ereignis ein Mausklick ist
+                if link_rect.collidepoint(pygame.mouse.get_pos()):  # Wenn der Mausklick innerhalb des link_rect ist
+                    webbrowser.open("https://github.com/CodePrivateer/Block-Composer")  # Öffnen Sie den Webbrowser mit der angegebenen URL
         while not paused and not quit_game and not quit_yes:
             for block in blocks[:]:  # Erstellen Sie eine Kopie der Liste für die Iteration
                 block.draw()  # Zeichnen Sie den Block
