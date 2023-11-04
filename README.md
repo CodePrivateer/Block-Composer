@@ -1,5 +1,5 @@
 # Block-Composer
-Block Composer is a game where players have to convert falling blocks into complete lines to score points. It is a challenging and fun puzzle game that requires strategy and quick thinking.
+Block Composer is a game where players have to convert falling blocks into complete lines to score points. It is a challenging and fun puzzle game that requires strategy and quick thinking. Inspired by Tetris.
 
 ## Requirements
 
