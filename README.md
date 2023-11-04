@@ -16,3 +16,5 @@ pip install pygame
 Or with CMD:
 
 python.exe -m pip install pygame
+
+---
