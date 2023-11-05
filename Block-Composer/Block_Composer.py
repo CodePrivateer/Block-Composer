@@ -2,6 +2,7 @@ import pygame
 import random
 import time
 import webbrowser
+# import ClassBC
 
 # Spielkonfiguration
 SCREEN_WIDTH, SCREEN_HEIGHT = 400, 600
@@ -109,6 +110,9 @@ clock = pygame.time.Clock()
 # Erstellen Sie eine Liste von Blöcken und fügen Sie den ersten Block hinzu
 game_field = GameField()  # Erstellen Sie ein GameField-Objekt
 blocks = [Block(5)]
+
+# Initialisiere Keyboard_handler Klasse
+# keyboard_handler = ClassBC.KeyboardHandler
 
 def draw_surface(s_width, s_height, alpha, color, pos_x, pos_y):
     s = pygame.Surface((s_width, s_height))  # Erstellen Sie eine Oberfläche
@@ -263,6 +267,8 @@ def spiel():
         for event in pygame.event.get():  # Durchlaufen Sie alle aufgetretenen Ereignisse
             if event.type == pygame.QUIT:  # Wenn das Ereignis QUIT ist (z.B. Schließen des Fensters)
                 return  # Beenden Sie die Funktion
+            # elif event.type == pygame.KEYDOWN:  # Wenn das Ereignis ein Tastendruck ist
+            #     keyboard_handler.handle_event(event, blocks, game_field)
             elif event.type == pygame.KEYDOWN:  # Wenn das Ereignis ein Tastendruck ist
                 if event.key == pygame.K_p:  # Wenn die gedrückte Taste "P" ist
                     paused = not paused  # Wechseln Sie den Pausenstatus
