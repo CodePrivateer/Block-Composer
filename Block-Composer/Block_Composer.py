@@ -1,4 +1,3 @@
-from ast import Constant
 import pygame
 import random
 import time
@@ -7,8 +6,6 @@ import ClassBC
 
 # Spielkonfiguration
 import Const
-
-link_rect = None
 
 # Blocks
 THE_BLOCKS = [
@@ -219,6 +216,7 @@ def spiel():
         'start': False,
         'speed': 1,
         'level': 1,
+        'link_rect': None,
     }
 
     start_timer = False
@@ -239,7 +237,7 @@ def spiel():
             while True:
                 pygame.time.wait(100)  # Warten Sie 100 Millisekunden
                 for event in pygame.event.get():  # Durchlaufen Sie alle aufgetretenen Ereignisse
-                    if event.type == pygame.QUIT:  # Wenn das Ereignis QUIT ist (z.B. Schlie�en des Fensters)
+                    if event.type == pygame.QUIT:  # Wenn das Ereignis QUIT ist (z.B. Schließen des Fensters)
                         return  # Beenden Sie die Funktion
                     elif event.type == pygame.KEYDOWN:  # Wenn das Ereignis ein Tastendruck ist
                         state['start'] = not state['start']
