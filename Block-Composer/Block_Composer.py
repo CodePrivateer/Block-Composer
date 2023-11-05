@@ -217,7 +217,6 @@ def spiel():
         'start': False,
         'speed': 1,
         'level': 1,
-        'link_rect': None,
     }
 
     start_timer = False
