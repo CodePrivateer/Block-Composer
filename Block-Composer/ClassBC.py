@@ -1,8 +1,9 @@
 import pygame
 import Const
+import webbrowser
 
-class KeyboardHandler:       
-    def handle_event(self, event, blocks, game_field, state):
+class EventHandler:       
+    def handle_keyboard_event(self, event, blocks, game_field, state):
         if event.key == pygame.K_p:
             state['paused'] = not state['paused']
         if event.key == pygame.K_q:
@@ -25,7 +26,7 @@ class KeyboardHandler:
         elif event.key == pygame.K_DOWN:  # Wenn die gedrückte Taste die Pfeiltaste nach unten ist
             state['speed'] = 10 * state['level']  # Erhöhen Sie die Geschwindigkeit, mit der der Block fällt
     
-    def handle_start_event(self, event, blocks, game_field, state):
+    def handle_start_event(self, state, link_rect):
         while True:
             pygame.time.wait(100)  # Warten Sie 100 Millisekunden
             for event in pygame.event.get():  # Durchlaufen Sie alle aufgetretenen Ereignisse
@@ -34,7 +35,7 @@ class KeyboardHandler:
                 elif event.type == pygame.KEYDOWN:  # Wenn das Ereignis ein Tastendruck ist
                     state['start'] = not state['start']
                 elif event.type == pygame.MOUSEBUTTONDOWN:  # Wenn das Ereignis ein Mausklick ist
-                    if state['link_rect'].collidepoint(pygame.mouse.get_pos()):  # Wenn der Mausklick innerhalb des link_rect ist
+                    if link_rect.collidepoint(pygame.mouse.get_pos()):  # Wenn der Mausklick innerhalb des link_rect ist
                         webbrowser.open("https://github.com/CodePrivateer/Block-Composer")  # Öffnen Sie den Webbrowser mit der angegebenen URL
             if state['start']:
                 break

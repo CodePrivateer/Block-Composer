@@ -103,7 +103,7 @@ game_field = GameField()  # Erstellen Sie ein GameField-Objekt
 blocks = [Block(5)]
     
 # Initialisiere Keyboard_handler Klasse
-keyboard_handler = ClassBC.KeyboardHandler()
+event_handler = ClassBC.EventHandler()
 
 def draw_surface(s_width, s_height, alpha, color, pos_x, pos_y):
     s = pygame.Surface((s_width, s_height))  # Erstellen Sie eine Oberfläche
@@ -234,18 +234,7 @@ def spiel():
             score_screen(points, highscore, lines, state['level'])  
             start_screen()
             pygame.display.flip()
-            while True:
-                pygame.time.wait(100)  # Warten Sie 100 Millisekunden
-                for event in pygame.event.get():  # Durchlaufen Sie alle aufgetretenen Ereignisse
-                    if event.type == pygame.QUIT:  # Wenn das Ereignis QUIT ist (z.B. Schließen des Fensters)
-                        return  # Beenden Sie die Funktion
-                    elif event.type == pygame.KEYDOWN:  # Wenn das Ereignis ein Tastendruck ist
-                        state['start'] = not state['start']
-                    elif event.type == pygame.MOUSEBUTTONDOWN:  # Wenn das Ereignis ein Mausklick ist
-                        if link_rect.collidepoint(pygame.mouse.get_pos()):  # Wenn der Mausklick innerhalb des link_rect ist
-                            webbrowser.open("https://github.com/CodePrivateer/Block-Composer")  # Öffnen Sie den Webbrowser mit der angegebenen URL
-                if state['start']:
-                    break
+            event_handler.handle_start_event(state, link_rect)
             start_timer = False
             
         screen.fill((0,0,0))
@@ -262,7 +251,7 @@ def spiel():
             if event.type == pygame.QUIT:  # Wenn das Ereignis QUIT ist (z.B. Schließen des Fensters)
                 return  # Beenden Sie die Funktion
             elif event.type == pygame.KEYDOWN:  # Wenn das Ereignis ein Tastendruck ist
-                keyboard_handler.handle_event(event, blocks, game_field, state)
+                event_handler.handle_keyboard_event(event, blocks, game_field, state)
             elif event.type == pygame.MOUSEBUTTONDOWN:  # Wenn das Ereignis ein Mausklick ist
                 if link_rect.collidepoint(pygame.mouse.get_pos()):  # Wenn der Mausklick innerhalb des link_rect ist
                     webbrowser.open("https://github.com/CodePrivateer/Block-Composer")  # Öffnen Sie den Webbrowser mit der angegebenen URL
