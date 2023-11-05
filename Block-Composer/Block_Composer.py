@@ -119,7 +119,7 @@ def draw_text(text, size, color, x, y, centered=True):
     else:
         screen.blit(text_surface, (x, y))
         
-def draw_link(text, size, color, x, y, url, centered=True):
+def draw_link(text, size, color, x, y, centered=True):
     font = pygame.font.Font(None, size)
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
@@ -148,7 +148,7 @@ def score_screen(points, highscore, lines, level):
     draw_text("Space Key > rotate",24,(200,200,200),Const.SCREEN_WIDTH +10 ,330 ,centered=False)
     draw_text("'p' Key Pause",24,(200,200,200),Const.SCREEN_WIDTH +10 ,370 ,centered=False)
     draw_text("'q' Quit Game ",24,(200,200,200),Const.SCREEN_WIDTH +10 ,410 ,centered=False)
-    link_rect = draw_link("Block-Composer on Github", 16, (200,200,200), Const.SCREEN_WIDTH +10 ,530 , "https://github.com/CodePrivateer/Block-Composer", centered=False)
+    link_rect = draw_link("Block-Composer on Github", 16, (200,200,200), Const.SCREEN_WIDTH +10 ,530 ,centered=False)
 
 def pause_screen():
     draw_surface(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT, 128,(0,0,128),0 ,0)
@@ -247,14 +247,10 @@ def spiel():
             quit_screen()
             score_screen(points, highscore, lines, state['level'])
             pygame.display.flip()
-        for event in pygame.event.get():  # Durchlaufen Sie alle aufgetretenen Ereignisse
-            if event.type == pygame.QUIT:  # Wenn das Ereignis QUIT ist (z.B. Schließen des Fensters)
-                return  # Beenden Sie die Funktion
-            elif event.type == pygame.KEYDOWN:  # Wenn das Ereignis ein Tastendruck ist
-                event_handler.handle_keyboard_event(event, blocks, game_field, state)
-            elif event.type == pygame.MOUSEBUTTONDOWN:  # Wenn das Ereignis ein Mausklick ist
-                if link_rect.collidepoint(pygame.mouse.get_pos()):  # Wenn der Mausklick innerhalb des link_rect ist
-                    webbrowser.open("https://github.com/CodePrivateer/Block-Composer")  # Öffnen Sie den Webbrowser mit der angegebenen URL
+        events = pygame.event.get()    
+        event_handler.handle_mouse_event(events, link_rect)
+        event_handler.handle_keyboard_event(events, blocks, game_field, state)
+
         while not state['paused'] and not state['quit_game'] and not state['quit_yes']:
             for block in blocks[:]:  # Erstellen Sie eine Kopie der Liste für die Iteration
                 block.draw()  # Zeichnen Sie den Block
@@ -292,8 +288,7 @@ def spiel():
                                     if restart_game:  
                                         break  
                             else:
-                                blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu, wenn er nicht mit dem Spielfeld kollidiert
-       
+                                blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu, wenn er nicht mit dem Spielfeld kollidiert       
             counter += 1
             score_screen(points, highscore, lines, state['level'])
             break
