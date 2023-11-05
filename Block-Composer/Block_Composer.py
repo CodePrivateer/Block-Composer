@@ -6,6 +6,7 @@ import ClassBC
 
 # Spielkonfiguration
 import Const
+link_rect = None
 
 # Blocks
 THE_BLOCKS = [
