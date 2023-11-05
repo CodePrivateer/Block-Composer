@@ -23,6 +23,9 @@
   <ItemGroup>
     <Compile Include="Block_Composer.py" />
     <Compile Include="ClassBC.py" />
+    <Compile Include="Const.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
