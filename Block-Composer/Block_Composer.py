@@ -1,7 +1,6 @@
 import pygame
 import random
-import time
-import ClassBC
+import EventHandlerClass
 
 # Spielkonfiguration
 import Const
@@ -102,7 +101,7 @@ game_field = GameField()  # Erstellen Sie ein GameField-Objekt
 blocks = [Block(5)]
     
 # Initialisiere Keyboard_handler Klasse
-event_handler = ClassBC.EventHandler()
+event_handler = EventHandlerClass.EventHandler()
 
 def draw_surface(s_width, s_height, alpha, color, pos_x, pos_y):
     s = pygame.Surface((s_width, s_height))  # Erstellen Sie eine Oberfläche

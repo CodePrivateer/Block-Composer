@@ -1,4 +1,3 @@
-from pickle import NONE
 import pygame
 import Const
 import webbrowser
