@@ -1,6 +1,7 @@
 import pygame
 import random
 import EventHandlerClass
+import ScreenHandlerClass
 
 # Spielkonfiguration
 import Const
@@ -96,72 +97,15 @@ pygame.init()
 screen = pygame.display.set_mode((Const.SCREEN_WIDTH + Const.SCORE_AREA_WIDTH, Const.SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
+# initialisiere ScreenHandler Klasse
+screen_handler = ScreenHandlerClass.ScreenHandler(screen)
+
 # Erstellen Sie eine Liste von Blöcken und fügen Sie den ersten Block hinzu
 game_field = GameField()  # Erstellen Sie ein GameField-Objekt
 blocks = [Block(5)]
     
 # Initialisiere Keyboard_handler Klasse
 event_handler = EventHandlerClass.EventHandler()
-
-def draw_surface(s_width, s_height, alpha, color, pos_x, pos_y):
-    s = pygame.Surface((s_width, s_height))  # Erstellen Sie eine Oberfläche
-    s.set_alpha(alpha)  # Stellen Sie die Transparenz auf 50%
-    s.fill(color)  # Füllen Sie die Oberfläche mit Dunkelblau
-    screen.blit(s, (pos_x,pos_y))  # Blit die Oberfläche auf den Bildschirm
-
-def draw_text(text, size, color, x, y, centered=True):
-    font = pygame.font.Font(None, size)
-    text_surface = font.render(text, True, color)
-    if centered:
-        screen.blit(text_surface, (x - text_surface.get_width() // 2, y - text_surface.get_height() // 2))
-    else:
-        screen.blit(text_surface, (x, y))
-        
-def draw_link(text, size, color, x, y, centered=True):
-    font = pygame.font.Font(None, size)
-    text_surface = font.render(text, True, color)
-    text_rect = text_surface.get_rect()
-    if centered:
-        text_rect.center = (x, y)
-    else:
-        text_rect.topleft = (x, y)
-    screen.blit(text_surface, text_rect)
-    return text_rect  # Rückgabe des Rechtecks für Kollisionserkennung
-
-def game_over_screen():
-    draw_surface(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT, 128, (0,0,128), 0, 0)
-    draw_text("Game Over", 72, (255, 255, 255), Const.SCREEN_WIDTH // 2 , Const.SCREEN_HEIGHT // 4)
-    draw_text("Press key to play", 36, (255, 255, 255), Const.SCREEN_WIDTH // 2 , Const.SCREEN_HEIGHT // 2)
-
-def score_screen(points, highscore, lines, level):
-    global link_rect  # Deklarieren Sie link_rect als global innerhalb der Funktion
-    draw_surface(Const.SCORE_AREA_WIDTH, Const.SCREEN_HEIGHT, 128, (0,0,128), Const.SCREEN_WIDTH ,0)
-    draw_text(str(points).zfill(4) + " Points", 36,(200,200,200),Const.SCREEN_WIDTH +10 ,10 ,centered=False)
-    draw_text(str(lines).zfill(4) + " Lines",36,(200,200,200),Const.SCREEN_WIDTH +10 ,50 ,centered=False)
-    draw_text(str(level).zfill(4) + " Level",36,(200,200,200),Const.SCREEN_WIDTH +10 ,90 ,centered=False)
-    draw_text(str(highscore).zfill(4) + " Highscore",36,(255,200,200),Const.SCREEN_WIDTH +10 ,130 ,centered=False)
-    draw_text("Left Arrow > Shift left",24,(200,200,200),Const.SCREEN_WIDTH +10 ,210 ,centered=False)
-    draw_text("Right Arrow > Shift Right",24,(200,200,200),Const.SCREEN_WIDTH +10 ,250 ,centered=False)
-    draw_text("Down Arrow Key > Fast place",24,(200,200,200),Const.SCREEN_WIDTH +10 ,290 ,centered=False)
-    draw_text("Space Key > rotate",24,(200,200,200),Const.SCREEN_WIDTH +10 ,330 ,centered=False)
-    draw_text("'p' Key Pause",24,(200,200,200),Const.SCREEN_WIDTH +10 ,370 ,centered=False)
-    draw_text("'q' Quit Game ",24,(200,200,200),Const.SCREEN_WIDTH +10 ,410 ,centered=False)
-    link_rect = draw_link("Block-Composer on Github", 16, (200,200,200), Const.SCREEN_WIDTH +10 ,530 ,centered=False)
-
-def pause_screen():
-    draw_surface(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT, 128,(0,0,128),0 ,0)
-    draw_text("Game Paused",72,(255 ,255 ,255),Const.SCREEN_WIDTH //2 ,Const.SCREEN_HEIGHT //4)
-    draw_text("Press 'p' key to play",36,(255 ,255 ,255),Const.SCREEN_WIDTH //2 ,Const.SCREEN_HEIGHT //2)
-
-def start_screen():
-    draw_surface(Const.SCREEN_WIDTH ,Const.SCREEN_HEIGHT ,128 ,(0 ,0 ,128) ,0 ,0)
-    draw_text("Block-Composer",64 ,(255 ,255 ,255) ,Const.SCREEN_WIDTH //2 ,Const.SCREEN_HEIGHT //4)
-    draw_text("Press key to play",36 ,(255 ,255 ,255) ,Const.SCREEN_WIDTH //2 ,Const.SCREEN_HEIGHT //2)
-
-def quit_screen():
-    draw_surface(Const.SCREEN_WIDTH ,Const.SCREEN_HEIGHT ,128 ,(0 ,0 ,128) ,0 ,0)
-    draw_text("Quit Game?",72 ,(255 ,255 ,255) ,Const.SCREEN_WIDTH //2 ,Const.SCREEN_HEIGHT //4)
-    draw_text("Press y key to quit",36 ,(255 ,255 ,255) ,Const.SCREEN_WIDTH //2 ,Const.SCREEN_HEIGHT //2)
 
 def save_highscore(highscore):
     try:
@@ -187,8 +131,8 @@ def game_quit(points,highscore, lines, level):
         highscore = points
         save_highscore(highscore)
     game_field.reset_field()  # Setzen Sie das Spielfeld zurück
-    game_over_screen()  # Zeigen Sie den Game Over-Bildschirm an
-    score_screen(points, highscore, lines, level)  # Zeigen Sie das Scoreboard an
+    screen_handler.game_over_screen()  # Zeigen Sie den Game Over-Bildschirm an
+    screen_handler.score_screen(points, highscore, lines, level)  # Zeigen Sie das Scoreboard an
     return highscore
 
 def game_level(points, lines, level):
@@ -231,8 +175,8 @@ def spiel():
         if state['start_timer'] or state['start'] == False:
             screen.fill((0,0,0))
             screen.blit(background, (0, 0))  # Zeichnen Sie das Hintergrundbild
-            score_screen(points, highscore, lines, state['level'])  
-            start_screen()
+            screen_handler.score_screen(points, highscore, lines, state['level'])  
+            screen_handler.start_screen()
             pygame.display.flip()
             event_handler.handle_start_event(state, link_rect)
             state['start_timer'] = False
@@ -241,11 +185,11 @@ def spiel():
         screen.blit(background, (0, 0))  # Zeichnen Sie das Hintergrundbild
         game_field.draw()  # Zeichnen Sie das Spielfeld
         if state['paused']:
-            pause_screen()
-            score_screen(points, highscore, lines, state['level'])
+            screen_handler.pause_screen()
+            screen_handler.score_screen(points, highscore, lines, state['level'])
         if state['quit_game'] and not state['quit_yes']:
-            quit_screen()
-            score_screen(points, highscore, lines, state['level'])
+            screen_handler.quit_screen()
+            screen_handler.score_screen(points, highscore, lines, state['level'])
             pygame.display.flip()
         events = pygame.event.get()    
         event_handler.handle_mouse_event(events, link_rect)
@@ -276,10 +220,11 @@ def spiel():
                                 lines = 0
                                 pygame.display.flip()  
                                 event_handler.handle_gameover_event(state, blocks, new_block, link_rect)
+                                blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu
                             else:
                                 blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu, wenn er nicht mit dem Spielfeld kollidiert       
             counter += 1
-            score_screen(points, highscore, lines, state['level'])
+            screen_handler.score_screen(points, highscore, lines, state['level'])
             break
         if state['quit_yes']: # Das Spiel wurde vom Spieler beendet
             screen.fill((0,0,0))
@@ -288,7 +233,10 @@ def spiel():
             points = 0
             lines = 0
             pygame.display.flip()
+            blocks.remove(block)  # Entfernen Sie den aktuellen Block aus der Liste
+            new_block = Block(5)  # Erstellen Sie einen neuen Block    
             event_handler.handle_gameover_event(state, blocks, new_block, link_rect)
+            blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu
             state['quit_yes'] = False
             state['quit_game'] = False 
       
