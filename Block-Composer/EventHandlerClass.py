@@ -40,7 +40,6 @@ class EventHandler:
                     webbrowser.open("https://github.com/CodePrivateer/Block-Composer")  # Öffnen Sie den Webbrowser mit der angegebenen URL   
                     
     def handle_start_event(self, state, link_rect):
-        event_handler = EventHandler()
         while True:
             pygame.time.wait(100)  # Warten Sie 100 Millisekunden
             events = pygame.event.get()
@@ -49,16 +48,17 @@ class EventHandler:
                     pygame.quit()  # Beenden Sie die Funktion
                 elif event.type == pygame.KEYDOWN:  # Wenn das Ereignis ein Tastendruck ist
                     state['start'] = not state['start']
-            event_handler.handle_mouse_event(events, link_rect)
+            self.handle_mouse_event(events, link_rect)
             if state['start']:
                 break
 
-    def handle_gameover_event(self, state, blocks, new_block):
+    def handle_gameover_event(self, state, blocks, new_block, link_rect):
         state['restart_game'] = False
         state['start_screen_timer'] = time.time()  # Startzeit speichern
         while True:
             pygame.time.wait(100)  # Warten Sie 100 Millisekunden
-            for event in pygame.event.get():
+            events = pygame.event.get()
+            for event in events:
                 if event.type == pygame.QUIT:
                     return  
                 elif event.type == pygame.KEYDOWN:
@@ -66,6 +66,7 @@ class EventHandler:
                         blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu und starten Sie das Spiel neu
                     state['restart_game'] = True  
                     return
+            self.handle_mouse_event(events, link_rect)
             # überprüfen, ob 15 Sekunden vergangen sind
             if time.time() - state['start_screen_timer'] >= 10:
                 state['start_timer'] = True
