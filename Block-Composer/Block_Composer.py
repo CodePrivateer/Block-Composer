@@ -217,6 +217,7 @@ def spiel():
         'start': False,
         'speed': 1,
         'level': 1,
+        'restart_game': False,
     }
 
     start_timer = False
@@ -275,18 +276,7 @@ def spiel():
                                 points = 0
                                 lines = 0
                                 pygame.display.flip()  
-                                restart_game = False  
-                                while True:
-                                    pygame.time.wait(100)  # Warten Sie 100 Millisekunden
-                                    for event in pygame.event.get():
-                                        if event.type == pygame.QUIT:
-                                            return  
-                                        elif event.type == pygame.KEYDOWN:  
-                                            blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu und starten Sie das Spiel neu
-                                            restart_game = True  
-                                            break  
-                                    if restart_game:  
-                                        break  
+                                event_handler.handle_gameover_event(state, blocks, new_block)
                             else:
                                 blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu, wenn er nicht mit dem Spielfeld kollidiert       
             counter += 1
@@ -301,7 +291,7 @@ def spiel():
             points = 0
             lines = 0
             pygame.display.flip()  
-            restart_game = False
+            state['restart_game'] = False
             start_time = time.time()  # Startzeit speichern
             while True: # Game Over Schleife
                 pygame.time.wait(100)  # Warten Sie 100 Millisekunden
@@ -309,14 +299,14 @@ def spiel():
                     if event.type == pygame.QUIT:
                         return  
                     elif event.type == pygame.KEYDOWN:  
-                        restart_game = True  
+                        state['restart_game'] = True  
                         break
                 # überprüfen, ob 15 Sekunden vergangen sind
                 if time.time() - start_time >= 15:
                     start_timer = True
                     state['start'] = False
                     break    
-                if restart_game:  
+                if state['restart_game']:  
                     break  
       
         pygame.display.flip()

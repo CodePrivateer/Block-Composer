@@ -51,4 +51,19 @@ class EventHandler:
             event_handler.handle_mouse_event(events, link_rect)
             if state['start']:
                 break
+
+    def handle_gameover_event(self, state, blocks, new_block):
+        state['restart_game'] = False 
+        while True:
+            pygame.time.wait(100)  # Warten Sie 100 Millisekunden
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return  
+                elif event.type == pygame.KEYDOWN:  
+                    blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu und starten Sie das Spiel neu
+                    state['restart_game'] = True  
+                    break  
+            if state['restart_game']:  
+                break  
+
             
