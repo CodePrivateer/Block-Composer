@@ -1,5 +1,3 @@
-from tkinter import SEL
-from typing import Self
 import pygame
 import Const
 
