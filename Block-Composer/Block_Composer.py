@@ -1,7 +1,6 @@
 import pygame
 import random
 import time
-import webbrowser
 import ClassBC
 
 # Spielkonfiguration
@@ -218,9 +217,10 @@ def spiel():
         'speed': 1,
         'level': 1,
         'restart_game': False,
+        'start_timer': False,
+        'start_screen_timer': False,
     }
 
-    start_timer = False
     points = 0  # Initialisieren Sie die Punkte
     highscore = load_highscore()  # Initialisieren Sie den Highscore
     lines = 0
@@ -229,14 +229,14 @@ def spiel():
     background = pygame.transform.smoothscale(background, (650, 600))  # Skalieren Sie das Bild auf 650x600
      
     while True: # Spiel loop
-        if start_timer or state['start'] == False:
+        if state['start_timer'] or state['start'] == False:
             screen.fill((0,0,0))
             screen.blit(background, (0, 0))  # Zeichnen Sie das Hintergrundbild
             score_screen(points, highscore, lines, state['level'])  
             start_screen()
             pygame.display.flip()
             event_handler.handle_start_event(state, link_rect)
-            start_timer = False
+            state['start_timer'] = False
             
         screen.fill((0,0,0))
         screen.blit(background, (0, 0))  # Zeichnen Sie das Hintergrundbild
@@ -283,31 +283,15 @@ def spiel():
             score_screen(points, highscore, lines, state['level'])
             break
         if state['quit_yes']: # Das Spiel wurde vom Spieler beendet
-            state['quit_yes'] = False
-            state['quit_game'] = False
             screen.fill((0,0,0))
             screen.blit(background, (0, 0))  # Zeichnen Sie das Hintergrundbild
             highscore = game_quit(points,highscore,lines, state['level'])
             points = 0
             lines = 0
-            pygame.display.flip()  
-            state['restart_game'] = False
-            start_time = time.time()  # Startzeit speichern
-            while True: # Game Over Schleife
-                pygame.time.wait(100)  # Warten Sie 100 Millisekunden
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        return  
-                    elif event.type == pygame.KEYDOWN:  
-                        state['restart_game'] = True  
-                        break
-                # überprüfen, ob 15 Sekunden vergangen sind
-                if time.time() - start_time >= 15:
-                    start_timer = True
-                    state['start'] = False
-                    break    
-                if state['restart_game']:  
-                    break  
+            pygame.display.flip()
+            event_handler.handle_gameover_event(state, blocks, new_block)
+            state['quit_yes'] = False
+            state['quit_game'] = False 
       
         pygame.display.flip()
         clock.tick(60)

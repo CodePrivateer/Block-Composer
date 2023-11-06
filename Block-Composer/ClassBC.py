@@ -1,6 +1,8 @@
+from pickle import NONE
 import pygame
 import Const
 import webbrowser
+import time
 
 class EventHandler:       
     def handle_keyboard_event(self, events, blocks, game_field, state):
@@ -53,17 +55,24 @@ class EventHandler:
                 break
 
     def handle_gameover_event(self, state, blocks, new_block):
-        state['restart_game'] = False 
+        state['restart_game'] = False
+        state['start_screen_timer'] = time.time()  # Startzeit speichern
         while True:
             pygame.time.wait(100)  # Warten Sie 100 Millisekunden
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return  
-                elif event.type == pygame.KEYDOWN:  
-                    blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu und starten Sie das Spiel neu
+                elif event.type == pygame.KEYDOWN:
+                    if not state['quit_yes']:
+                        blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu und starten Sie das Spiel neu
                     state['restart_game'] = True  
-                    break  
+                    return
+            # überprüfen, ob 15 Sekunden vergangen sind
+            if time.time() - state['start_screen_timer'] >= 10:
+                state['start_timer'] = True
+                state['start'] = False
+                return   
             if state['restart_game']:  
-                break  
+                return 
 
             
