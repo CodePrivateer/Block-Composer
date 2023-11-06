@@ -275,7 +275,7 @@ def spiel():
                                 points = 0
                                 lines = 0
                                 pygame.display.flip()  
-                                event_handler.handle_gameover_event(state, blocks, new_block)
+                                event_handler.handle_gameover_event(state, blocks, new_block, link_rect)
                             else:
                                 blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu, wenn er nicht mit dem Spielfeld kollidiert       
             counter += 1
@@ -288,7 +288,7 @@ def spiel():
             points = 0
             lines = 0
             pygame.display.flip()
-            event_handler.handle_gameover_event(state, blocks, new_block)
+            event_handler.handle_gameover_event(state, blocks, new_block, link_rect)
             state['quit_yes'] = False
             state['quit_game'] = False 
       
