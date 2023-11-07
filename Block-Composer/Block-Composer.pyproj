@@ -26,6 +26,7 @@
     <Compile Include="Const.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ComponentClass.py" />
     <Compile Include="ScreenHandlerClass.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
