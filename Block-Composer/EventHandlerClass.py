@@ -73,6 +73,4 @@ class EventHandler:
                 state['start'] = False
                 return   
             if state['restart_game']:  
-                return 
-
-            
+                return
