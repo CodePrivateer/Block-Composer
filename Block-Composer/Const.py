@@ -6,5 +6,18 @@ POINTS_ROW = 20
 LEVEL_POINTS = 250
 LEVEL_LINES = 4
 LEVEL_MAX = 5
-# Erstellen Sie einen zusätzlichen Bereich für die Anzeige von Punkten und Highscore
+
+# Seitenbereich für die Anzeige von Punkten und Highscore
 SCORE_AREA_WIDTH = 250
+
+# Blocks
+THE_BLOCKS = [
+    [[1, 1, 1, 1]],
+    [[1, 1], [1, 1]],
+    [[1, 1, 0], [0, 1, 1]],
+    [[0, 1, 1], [1, 1, 0]],
+    [[1, 1, 1], [0, 1, 0]],
+    [[1, 1, 1], [0, 0, 1]],
+    [[0, 0, 1], [1, 1, 1]],
+    [[1, 1, 1]],
+]
