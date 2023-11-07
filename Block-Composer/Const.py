@@ -1,5 +1,6 @@
 #Game Constants / Spielkonfiguration
 SCREEN_WIDTH, SCREEN_HEIGHT = 400, 600
+START_COLUMN = 8
 BLOCK_SIZE = 20
 POINTS_BLOCK = 5
 POINTS_ROW = 20

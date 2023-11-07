@@ -41,8 +41,7 @@ def spiel():
         'highscore': 0,
         'lines': 0,
     }
-
-    block = ComponentClass.Block(5, screen)  # Erstellen Sie eine einzelne Block-Instanz
+    block = ComponentClass.Block(Const.START_COLUMN, screen)  # Erstellen Sie eine einzelne Block-Instanz
     state['highscore'] = component_handler.load_highscore()  # Initialisieren Sie den Highscore
     background = pygame.image.load('background.jpeg')  # Laden Sie das Hintergrundbild
     background.set_alpha(128)  # erh�hen der Transparenz des Hintergrundbildes
@@ -87,7 +86,7 @@ def spiel():
                             state['points'] += removed_rows * Const.POINTS_ROW  # Erhöhen Sie die Punkte um die Anzahl der entfernten Reihen multipliziert mit den Punkten pro Reihe
                             state['lines'] += removed_rows
                         state['level'] = component_handler.game_level(state)
-                        block = ComponentClass.Block(5,screen)  # Erstellen Sie einen neuen Block
+                        block = ComponentClass.Block(Const.START_COLUMN,screen)  # Erstellen Sie einen neuen Block
                         state['speed'] = 1 * state['level']                       
                         if block.collides(game_field):  # überprüfen Sie, ob der neue Block mit dem Spielfeld kollidiert
                             state['highscore'] = component_handler.game_quit(state, game_field, screen_handler)
