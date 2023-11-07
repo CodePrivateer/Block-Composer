@@ -1,5 +1,4 @@
 import pygame
-import random
 import EventHandlerClass
 import ScreenHandlerClass
 import ComponentClass
@@ -18,7 +17,6 @@ screen_handler = ScreenHandlerClass.ScreenHandler(screen)
 
 # Erstellen Sie eine Liste von Blöcken und fügen Sie den ersten Block hinzu
 game_field = ComponentClass.GameField(screen)  # Erstellen Sie ein GameField-Objekt
-blocks = blocks = [ComponentClass.Block(5, screen) for _ in range(1)]
     
 # Initialisiere Keyboard_handler Klasse
 event_handler = EventHandlerClass.EventHandler()
@@ -44,6 +42,7 @@ def spiel():
         'lines': 0,
     }
 
+    block = ComponentClass.Block(5, screen)  # Erstellen Sie eine einzelne Block-Instanz
     state['highscore'] = component_handler.load_highscore()  # Initialisieren Sie den Highscore
     background = pygame.image.load('background.jpeg')  # Laden Sie das Hintergrundbild
     background.set_alpha(128)  # erh�hen der Transparenz des Hintergrundbildes
@@ -71,36 +70,31 @@ def spiel():
             pygame.display.flip()
         events = pygame.event.get()    
         event_handler.handle_mouse_event(events, link_rect)
-        event_handler.handle_keyboard_event(events, blocks, game_field, state)
+        event_handler.handle_keyboard_event(events, block, game_field, state)
 
         while not state['paused'] and not state['quit_game'] and not state['quit_yes']:
-            for block in blocks[:]:  # Erstellen Sie eine Kopie der Liste für die Iteration
-                block.draw()  # Zeichnen Sie den Block
-                if counter % (40 // state['speed']) == 0: 
-                    if not block.reached_bottom:  # überprüfen Sie, ob der Block den Boden noch nicht erreicht hat
-                        block.row += 1  # Bewegen Sie den Block eine Zeile nach unten
-                        if block.collides(game_field):  # überprüfen Sie, ob der Block mit dem Spielfeld kollidiert
-                            block.row -= 1  # Bewegen Sie den Block eine Zeile nach oben
-                            block.reached_bottom = True  # Setzen Sie reached_bottom auf True, da der Block den Boden erreicht hat
-                            state['points'] += Const.POINTS_BLOCK  # Erhöhen Sie die Punkte um die Punkte für einen Block
-                            game_field.add_block(block)  # Fügen Sie den Block zum Spielfeld hinzu
-                            removed_rows = game_field.remove_full_rows()  # Entfernen Sie volle Reihen vom Spielfeld und speichern Sie die Anzahl der entfernten Reihen
-                            if removed_rows is not None:  # überprüfen Sie, ob Reihen entfernt wurden
-                                state['points'] += removed_rows * Const.POINTS_ROW  # Erhöhen Sie die Punkte um die Anzahl der entfernten Reihen multipliziert mit den Punkten pro Reihe
-                                state['lines'] += removed_rows
-                            state['level'] = component_handler.game_level(state)
-                            blocks.remove(block)  # Entfernen Sie den Block aus der Liste
-                            new_block = ComponentClass.Block(5,screen)  # Erstellen Sie einen neuen Block
-                            state['speed'] = 1 * state['level']                       
-                            if new_block.collides(game_field):  # überprüfen Sie, ob der neue Block mit dem Spielfeld kollidiert
-                                state['highscore'] = component_handler.game_quit(state, game_field, screen_handler)
-                                state['points'] = 0
-                                state['lines'] = 0
-                                pygame.display.flip()  
-                                event_handler.handle_gameover_event(state, blocks, new_block, link_rect)
-                                blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu
-                            else:
-                                blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu, wenn er nicht mit dem Spielfeld kollidiert       
+            block.draw()  # Zeichnen Sie den Block
+            if counter % (40 // state['speed']) == 0: 
+                if not block.reached_bottom:  # überprüfen Sie, ob der Block den Boden noch nicht erreicht hat
+                    block.row += 1  # Bewegen Sie den Block eine Zeile nach unten
+                    if block.collides(game_field):  # überprüfen Sie, ob der Block mit dem Spielfeld kollidiert
+                        block.row -= 1  # Bewegen Sie den Block eine Zeile nach oben
+                        block.reached_bottom = True  # Setzen Sie reached_bottom auf True, da der Block den Boden erreicht hat
+                        state['points'] += Const.POINTS_BLOCK  # Erhöhen Sie die Punkte um die Punkte für einen Block
+                        game_field.add_block(block)  # Fügen Sie den Block zum Spielfeld hinzu
+                        removed_rows = game_field.remove_full_rows()  # Entfernen Sie volle Reihen vom Spielfeld und speichern Sie die Anzahl der entfernten Reihen
+                        if removed_rows is not None:  # überprüfen Sie, ob Reihen entfernt wurden
+                            state['points'] += removed_rows * Const.POINTS_ROW  # Erhöhen Sie die Punkte um die Anzahl der entfernten Reihen multipliziert mit den Punkten pro Reihe
+                            state['lines'] += removed_rows
+                        state['level'] = component_handler.game_level(state)
+                        block = ComponentClass.Block(5,screen)  # Erstellen Sie einen neuen Block
+                        state['speed'] = 1 * state['level']                       
+                        if block.collides(game_field):  # überprüfen Sie, ob der neue Block mit dem Spielfeld kollidiert
+                            state['highscore'] = component_handler.game_quit(state, game_field, screen_handler)
+                            state['points'] = 0
+                            state['lines'] = 0
+                            pygame.display.flip()  
+                            event_handler.handle_gameover_event(state, link_rect)
             counter += 1
             screen_handler.score_screen(state)
             break
@@ -111,10 +105,8 @@ def spiel():
             state['points'] = 0
             state['lines'] = 0
             pygame.display.flip()
-            blocks.remove(block)  # Entfernen Sie den aktuellen Block aus der Liste
-            new_block = ComponentClass.Block(5,screen)  # Erstellen Sie einen neuen Block    
-            event_handler.handle_gameover_event(state, blocks, new_block, link_rect)
-            blocks.append(new_block)  # Fügen Sie den neuen Block zur Liste hinzu
+            block = ComponentClass.Block(5,screen)  # Erstellen Sie einen neuen Block    
+            event_handler.handle_gameover_event(state, link_rect)
             state['quit_yes'] = False
             state['quit_game'] = False 
       
