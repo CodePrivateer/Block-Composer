@@ -35,13 +35,13 @@ class ScreenHandler:
         self.draw_text("Game Over", 72, (255, 255, 255), Const.SCREEN_WIDTH // 2 , Const.SCREEN_HEIGHT // 4)
         self.draw_text("Press key to play", 36, (255, 255, 255), Const.SCREEN_WIDTH // 2 , Const.SCREEN_HEIGHT // 2)
 
-    def score_screen(self, points, highscore, lines, level):
+    def score_screen(self, state):
         global link_rect  # Deklarieren Sie link_rect als global innerhalb der Funktion
         self.draw_surface(Const.SCORE_AREA_WIDTH, Const.SCREEN_HEIGHT, 128, (0,0,128), Const.SCREEN_WIDTH ,0)
-        self.draw_text(str(points).zfill(4) + " Points", 36,(200,200,200),Const.SCREEN_WIDTH +10 ,10 ,centered=False)
-        self.draw_text(str(lines).zfill(4) + " Lines",36,(200,200,200),Const.SCREEN_WIDTH +10 ,50 ,centered=False)
-        self.draw_text(str(level).zfill(4) + " Level",36,(200,200,200),Const.SCREEN_WIDTH +10 ,90 ,centered=False)
-        self.draw_text(str(highscore).zfill(4) + " Highscore",36,(255,200,200),Const.SCREEN_WIDTH +10 ,130 ,centered=False)
+        self.draw_text(str(state['points']).zfill(4) + " Points", 36,(200,200,200),Const.SCREEN_WIDTH +10 ,10 ,centered=False)
+        self.draw_text(str(state['lines']).zfill(4) + " Lines",36,(200,200,200),Const.SCREEN_WIDTH +10 ,50 ,centered=False)
+        self.draw_text(str(state['level']).zfill(4) + " Level",36,(200,200,200),Const.SCREEN_WIDTH +10 ,90 ,centered=False)
+        self.draw_text(str(state['highscore']).zfill(4) + " Highscore",36,(255,200,200),Const.SCREEN_WIDTH +10 ,130 ,centered=False)
         self.draw_text("Left Arrow > Shift left",24,(200,200,200),Const.SCREEN_WIDTH +10 ,210 ,centered=False)
         self.draw_text("Right Arrow > Shift Right",24,(200,200,200),Const.SCREEN_WIDTH +10 ,250 ,centered=False)
         self.draw_text("Down Arrow Key > Fast place",24,(200,200,200),Const.SCREEN_WIDTH +10 ,290 ,centered=False)
