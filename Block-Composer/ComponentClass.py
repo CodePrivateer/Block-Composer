@@ -1,9 +1,10 @@
-﻿import Const
+﻿from typing import Self
+import Const
 import random
 import pygame
 
 class ComponentHandler(object):
-    
+       
     def game_quit(self, state, game_field, screen_handler):
 
         if state['points'] > state['highscore']:  # Wenn die Punkte h�her sind als der Highscore, setzen Sie den Highscore auf die Punkte
