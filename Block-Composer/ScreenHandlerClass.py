@@ -6,10 +6,10 @@ class ScreenHandler:
         self.screen = screen
         
     def draw_surface(self, s_width, s_height, alpha, color, pos_x, pos_y):
-        s = pygame.Surface((s_width, s_height))  # Erstellen Sie eine Oberfläche
+        s = pygame.Surface((s_width, s_height))  # Erstellen Sie eine Oberflï¿½che
         s.set_alpha(alpha)  # Stellen Sie die Transparenz auf 50%
-        s.fill(color)  # Füllen Sie die Oberfläche mit Dunkelblau
-        self.screen.blit(s, (pos_x,pos_y))  # Blit die Oberfläche auf den Bildschirm
+        s.fill(color)  # Fï¿½llen Sie die Oberflï¿½che mit Dunkelblau
+        self.screen.blit(s, (pos_x,pos_y))  # Blit die Oberflï¿½che auf den Bildschirm
 
     def draw_text(self, text, size, color, x, y, centered=True):
         font = pygame.font.Font(None, size)
@@ -28,7 +28,7 @@ class ScreenHandler:
         else:
             text_rect.topleft = (x, y)
         self.screen.blit(text_surface, text_rect)
-        return text_rect  # Rückgabe des Rechtecks für Kollisionserkennung
+        return text_rect  # Rï¿½ckgabe des Rechtecks fï¿½r Kollisionserkennung
 
     def game_over_screen(self):
         self.draw_surface(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT, 128, (0,0,128), 0, 0)
