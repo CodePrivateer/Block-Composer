@@ -7,6 +7,7 @@ POINTS_ROW = 20
 LEVEL_POINTS = 250
 LEVEL_LINES = 4
 LEVEL_MAX = 5
+SPEED_FASTFOREWARD = 80
 
 # Seitenbereich für die Anzeige von Punkten und Highscore
 SCORE_AREA_WIDTH = 250
