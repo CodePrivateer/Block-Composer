@@ -28,24 +28,28 @@ def draw_start_screen(screen, background, state):
     screen.blit(background, (0, 0))
     screen_handler.score_screen(state)
     screen_handler.start_screen()
+    screen_handler.link_screen()
     pygame.display.flip()
     
 def draw_pause_screen(state):
     screen_handler.pause_screen()
     screen_handler.score_screen(state)
+    screen_handler.link_screen()
 
 def draw_quit_screen(state):
     screen_handler.quit_screen()
     screen_handler.score_screen(state)
+    screen_handler.link_screen()
     pygame.display.flip()
     
-def draw_game(screen, background, block, game_field, state):
+def draw_game(screen, background, game_field, state):
     screen.fill((0,0,0))
     screen.blit(background, (0, 0))
     game_field.draw()
     screen_handler.score_screen(state)
+    screen_handler.link_screen()
     
-def handle_events(block, game_field, state):
+def handle_events(block, game_field, state, link_rect):
     events = pygame.event.get()    
     event_handler.handle_mouse_event(events, link_rect)
     event_handler.handle_keyboard_event(events, block, game_field, state)
@@ -87,7 +91,6 @@ def block_move(state, block, component_handler, game_field, background):
 
 # Spiel Loop
 def spiel():
-    counter = 0
     state = {
         'paused': False,
         'quit_game': False,
@@ -108,13 +111,15 @@ def spiel():
     
     # Initialisiere die start time
     start_time = time.time()
-    
+        
     block = ComponentClass.Block(Const.START_COLUMN, screen)  # Erstellen Sie eine einzelne Block-Instanz
     state['highscore'] = component_handler.load_highscore()  # Initialisieren Sie den Highscore
     background = pygame.image.load('background.jpeg')  # Laden Sie das Hintergrundbild
     background.set_alpha(128)  # erh�hen der Transparenz des Hintergrundbildes
     background = pygame.transform.smoothscale(background, (650, 600))  # Skalieren Sie das Bild auf 650x600
-     
+    link_rect = screen_handler.link_screen()
+    print(link_rect)
+
     while True: # Spiel loop
         current_time = time.time()
         elapsed_time = current_time - start_time
@@ -124,18 +129,17 @@ def spiel():
             event_handler.handle_start_event(state, link_rect)
             state['start_timer'] = False
         
-        draw_game(screen, background, block, game_field, state)
+        draw_game(screen, background, game_field, state)
         
         if state['paused']:
             draw_pause_screen()
         if state['quit_game'] and not state['quit_yes']:
             draw_quit_screen(state)
 
-        handle_events(block, game_field, state)
+        handle_events(block, game_field, state, link_rect)
 
         if not state['paused'] and not state['quit_game'] and not state['quit_yes']:
             block.draw()  # Zeichnen Sie den Block
-            print(state['speed'])
             if elapsed_time >= 1 / state['speed']:
                 block = block_move(state, block, component_handler, game_field, background)
                 start_time = time.time()  # Setzen Sie den Timer zurück           
