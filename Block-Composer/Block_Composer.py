@@ -118,7 +118,6 @@ def spiel():
     background.set_alpha(128)  # erh�hen der Transparenz des Hintergrundbildes
     background = pygame.transform.smoothscale(background, (650, 600))  # Skalieren Sie das Bild auf 650x600
     link_rect = screen_handler.link_screen()
-    print(link_rect)
 
     while True: # Spiel loop
         current_time = time.time()
