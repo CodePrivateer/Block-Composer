@@ -131,10 +131,12 @@ def spiel():
         draw_game(screen, background, game_field, state)
         
         if state['paused']:
-            draw_pause_screen()
+            draw_pause_screen(state)
         if state['quit_game'] and not state['quit_yes']:
             draw_quit_screen(state)
-
+        if state['quit_yes']: # Das Spiel wurde vom Spieler beendet
+            reset_game(state, game_field, screen_handler, background, component_handler)
+            
         handle_events(block, game_field, state, link_rect)
 
         if not state['paused'] and not state['quit_game'] and not state['quit_yes']:
@@ -143,9 +145,6 @@ def spiel():
                 block = block_move(state, block, component_handler, game_field, background)
                 start_time = time.time()  # Setzen Sie den Timer zurück           
             screen_handler.score_screen(state)
-        
-            if state['quit_yes']: # Das Spiel wurde vom Spieler beendet
-                reset_game(state, game_field, screen_handler, background, component_handler)
       
             pygame.display.flip()
             clock.tick(60)
