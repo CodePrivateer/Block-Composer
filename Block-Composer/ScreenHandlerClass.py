@@ -36,7 +36,6 @@ class ScreenHandler:
         self.draw_text("Press key to play", 36, (255, 255, 255), Const.SCREEN_WIDTH // 2 , Const.SCREEN_HEIGHT // 2)
 
     def score_screen(self, state):
-        global link_rect  # Deklarieren Sie link_rect als global innerhalb der Funktion
         self.draw_surface(Const.SCORE_AREA_WIDTH, Const.SCREEN_HEIGHT, 128, (0,0,128), Const.SCREEN_WIDTH ,0)
         self.draw_text(str(state['points']).zfill(4) + " Points", 36,(200,200,200),Const.SCREEN_WIDTH +10 ,10 ,centered=False)
         self.draw_text(str(state['lines']).zfill(4) + " Lines",36,(200,200,200),Const.SCREEN_WIDTH +10 ,50 ,centered=False)
@@ -48,7 +47,10 @@ class ScreenHandler:
         self.draw_text("Space Key > rotate",24,(200,200,200),Const.SCREEN_WIDTH +10 ,330 ,centered=False)
         self.draw_text("'p' Key Pause",24,(200,200,200),Const.SCREEN_WIDTH +10 ,370 ,centered=False)
         self.draw_text("'q' Quit Game ",24,(200,200,200),Const.SCREEN_WIDTH +10 ,410 ,centered=False)
+
+    def link_screen(self):
         link_rect = self.draw_link("Block-Composer on Github", 16, (200,200,200), Const.SCREEN_WIDTH +10 ,530 ,centered=False)
+        return link_rect       
 
     def pause_screen(self):
         self.draw_surface(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT, 128,(0,0,128),0 ,0)
