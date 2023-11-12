@@ -30,7 +30,7 @@ class EventHandler:
                 elif event.key == pygame.K_SPACE:  # Wenn die gedrückte Taste die Leertaste ist
                     block.rotate(game_field)  # Drehen Sie den Block und übergeben Sie das Spielfeld an die rotate-Methode zur Kollisionsprüfung
                 elif event.key == pygame.K_DOWN:  # Wenn die gedrückte Taste die Pfeiltaste nach unten ist
-                    state['speed'] = 10 * state['level']  # Erhöhen Sie die Geschwindigkeit, mit der der Block fällt
+                    state['speed'] = Const.SPEED_FASTFOREWARD  # Erhöhen Sie die Geschwindigkeit, mit der der Block fällt
 
     def handle_mouse_event(self, events, link_rect):
         for event in events:  # Durchlaufen Sie alle aufgetretenen Ereignisse
