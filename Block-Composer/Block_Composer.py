@@ -22,6 +22,9 @@ game_field = ComponentClass.GameField(screen)  # Erstellen Sie ein GameField-Obj
 # Initialisiere Keyboard_handler Klasse
 event_handler = EventHandlerClass.EventHandler()
 
+# Initialisiere den Sound
+sound_handler = ComponentClass.SoundHandler()
+
 # Funktionen
 def draw_start_screen(screen, background, state):
     screen.fill((0,0,0))
@@ -61,7 +64,6 @@ def reset_game(state, game_field, screen_handler, background, component_handler)
     state['points'] = 0
     state['lines'] = 0
     pygame.display.flip()
-    #block = ComponentClass.Block(Const.START_COLUMN,screen)  # Erstellen Sie einen neuen Block    
     event_handler.handle_gameover_event(state, link_rect)
     state['quit_yes'] = False
     state['quit_game'] = False 
@@ -71,11 +73,14 @@ def remove_rows(state, game_field):
     if removed_rows is not None:  # überprüfen Sie, ob Reihen entfernt wurden
         state['points'] += removed_rows * Const.POINTS_ROW  # Erhöhen Sie die Punkte um die Anzahl der entfernten Reihen multipliziert mit den Punkten pro Reihe
         state['lines'] += removed_rows
+        if removed_rows>0:
+            sound_handler.action_performed('line_remove')
 
 def block_move(state, block, component_handler, game_field, background):
     if not block.reached_bottom:  # überprüfen Sie, ob der Block den Boden noch nicht erreicht hat
         block.row += 1  # Bewegen Sie den Block eine Zeile nach unten
         if block.collides(game_field):  # überprüfen Sie, ob der Block mit dem Spielfeld kollidiert
+            sound_handler.action_performed('block_down') # Sound abspielen
             block.row -= 1  # Bewegen Sie den Block eine Zeile nach oben
             block.reached_bottom = True  # Setzen Sie reached_bottom auf True, da der Block den Boden erreicht hat
             state['points'] += Const.POINTS_BLOCK  # Erhöhen Sie die Punkte um die Punkte für einen Block
@@ -91,63 +96,66 @@ def block_move(state, block, component_handler, game_field, background):
 
 # Spiel Loop
 def spiel():
-    state = {
-        'paused': False,
-        'quit_game': False,
-        'quit_yes': False,
-        'start': False,
-        'speed': 1,
-        'level': 1,
-        'restart_game': False,
-        'start_timer': False,
-        'start_screen_timer': False,
-        'points': 0,
-        'highscore': 0,
-        'lines': 0,
-    }
+    try:
+        state = {
+            'paused': False,
+            'quit_game': False,
+            'quit_yes': False,
+            'start': False,
+            'speed': 1,
+            'level': 1,
+            'restart_game': False,
+            'start_timer': False,
+            'start_screen_timer': False,
+            'points': 0,
+            'highscore': 0,
+            'lines': 0,
+        }
     
-    # Initialisiere ComponentClass Klasse
-    component_handler = ComponentClass.ComponentHandler()
+        # Initialisiere ComponentClass Klasse
+        component_handler = ComponentClass.ComponentHandler()
     
-    # Initialisiere die start time
-    start_time = time.time()
+        # Initialisiere die start time
+        start_time = time.time()
         
-    block = ComponentClass.Block(Const.START_COLUMN, screen)  # Erstellen Sie eine einzelne Block-Instanz
-    state['highscore'] = component_handler.load_highscore()  # Initialisieren Sie den Highscore
-    background = pygame.image.load('background.jpeg')  # Laden Sie das Hintergrundbild
-    background.set_alpha(128)  # erh�hen der Transparenz des Hintergrundbildes
-    background = pygame.transform.smoothscale(background, (650, 600))  # Skalieren Sie das Bild auf 650x600
-    link_rect = screen_handler.link_screen()
+        block = ComponentClass.Block(Const.START_COLUMN, screen)  # Erstellen Sie eine einzelne Block-Instanz
+        state['highscore'] = component_handler.load_highscore()  # Initialisieren Sie den Highscore
+        background = pygame.image.load('background.jpeg')  # Laden Sie das Hintergrundbild
+        background.set_alpha(128)  # erh�hen der Transparenz des Hintergrundbildes
+        background = pygame.transform.smoothscale(background, (650, 600))  # Skalieren Sie das Bild auf 650x600
+        link_rect = screen_handler.link_screen()
 
-    while True: # Spiel loop
-        current_time = time.time()
-        elapsed_time = current_time - start_time
+        while True: # Spiel loop
+            current_time = time.time()
+            elapsed_time = current_time - start_time
         
-        if state['start_timer'] or state['start'] == False:
-            draw_start_screen(screen, background, state)
-            event_handler.handle_start_event(state, link_rect)
-            state['start_timer'] = False
+            if state['start_timer'] or state['start'] == False:
+                draw_start_screen(screen, background, state)
+                event_handler.handle_start_event(state, link_rect)
+                state['start_timer'] = False
         
-        draw_game(screen, background, game_field, state)
+            draw_game(screen, background, game_field, state)
         
-        if state['paused']:
-            draw_pause_screen(state)
-        if state['quit_game'] and not state['quit_yes']:
-            draw_quit_screen(state)
-        if state['quit_yes']: # Das Spiel wurde vom Spieler beendet
-            reset_game(state, game_field, screen_handler, background, component_handler)
+            if state['paused']:
+                draw_pause_screen(state)
+            if state['quit_game'] and not state['quit_yes']:
+                draw_quit_screen(state)
+            if state['quit_yes']: # Das Spiel wurde vom Spieler beendet
+                reset_game(state, game_field, screen_handler, background, component_handler)
             
-        handle_events(block, game_field, state, link_rect)
+            handle_events(block, game_field, state, link_rect)
 
-        if not state['paused'] and not state['quit_game'] and not state['quit_yes']:
-            block.draw()  # Zeichnen Sie den Block
-            if elapsed_time >= 1 / state['speed']:
-                block = block_move(state, block, component_handler, game_field, background)
-                start_time = time.time()  # Setzen Sie den Timer zurück           
-            screen_handler.score_screen(state)
+            if not state['paused'] and not state['quit_game'] and not state['quit_yes']:
+                block.draw()  # Zeichnen Sie den Block
+                if elapsed_time >= 1 / state['speed']:
+                    block = block_move(state, block, component_handler, game_field, background)
+                    start_time = time.time()  # Setzen Sie den Timer zurück           
+                screen_handler.score_screen(state)
       
-            pygame.display.flip()
-            clock.tick(60)
-
+                pygame.display.flip()
+                clock.tick(60)
+    except Exception as e:
+        print ("Ein Fehler ist aufgetreten:", e)
+        input("Drücken Sie eine beliebige Taste, um fortzufahren...")
 spiel()
 pygame.quit()
