@@ -38,6 +38,7 @@ def draw_pause_screen(state):
     screen_handler.pause_screen()
     screen_handler.score_screen(state)
     screen_handler.link_screen()
+    pygame.display.flip()
 
 def draw_quit_screen(state):
     screen_handler.quit_screen()
@@ -63,8 +64,11 @@ def reset_game(state, game_field, screen_handler, background, component_handler)
     state['highscore'] = component_handler.game_quit(state, game_field, screen_handler)
     state['points'] = 0
     state['lines'] = 0
+    state['level'] = 1
     pygame.display.flip()
     event_handler.handle_gameover_event(state, link_rect)
+    if state['restart_game']:
+        sound_handler.action_performed('game_start') # Sound abspielen
     state['quit_yes'] = False
     state['quit_game'] = False 
 
@@ -86,10 +90,15 @@ def block_move(state, block, component_handler, game_field, background):
             state['points'] += Const.POINTS_BLOCK  # Erhöhen Sie die Punkte um die Punkte für einen Block
             game_field.add_block(block)  # Fügen Sie den Block zum Spielfeld hinzu
             remove_rows(state, game_field)
+            old_level = state['level']
             state['level'] = component_handler.game_level(state)
+            print(old_level, state['level'])
+            if old_level < state['level']:
+                sound_handler.action_performed('level_up') # Sound abspielen
             block = ComponentClass.Block(Const.START_COLUMN,screen)  # Erstellen Sie einen neuen Block
             state['speed'] = 1 + state['level']                       
             if block.collides(game_field):  # überprüfen Sie, ob der neue Block mit dem Spielfeld kollidiert
+                sound_handler.action_performed('game_over') # Sound abspielen
                 reset_game(state, game_field, screen_handler, background, component_handler)
             return block
     return block
@@ -132,6 +141,7 @@ def spiel():
             if state['start_timer'] or state['start'] == False:
                 draw_start_screen(screen, background, state)
                 event_handler.handle_start_event(state, link_rect)
+                sound_handler.action_performed('game_start') # Sound abspielen
                 state['start_timer'] = False
         
             draw_game(screen, background, game_field, state)
@@ -141,7 +151,8 @@ def spiel():
             if state['quit_game'] and not state['quit_yes']:
                 draw_quit_screen(state)
             if state['quit_yes']: # Das Spiel wurde vom Spieler beendet
-                reset_game(state, game_field, screen_handler, background, component_handler)
+                sound_handler.action_performed('game_over') # Sound abspielen 
+                reset_game(state, game_field, screen_handler, background, component_handler)               
             
             handle_events(block, game_field, state, link_rect)
 
