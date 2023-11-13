@@ -97,10 +97,23 @@ class GameField:
         removed_rows = 0  # Initialisieren Sie die Zählvariable
         for r in range(Const.SCREEN_HEIGHT // Const.BLOCK_SIZE):
             if all(self.field[r][c] is not None for c in range(Const.SCREEN_WIDTH // Const.BLOCK_SIZE)):
+                # Lassen Sie die Reihe blinken, bevor Sie sie entfernen
+                for _ in range(3):  # Ändern Sie die Anzahl der Wiederholungen, um die Anzahl der Blinkvorgänge zu ändern
+                    self.field[r] = [None if cell is None else (255, 255, 255) for cell in self.field[r]]  # Ändern Sie die Farbe der Zellen in der Reihe in Weiß
+                    self.draw()  # Zeichnen Sie das Spielfeld
+                    pygame.display.flip()  # Aktualisieren Sie den Bildschirm
+                    pygame.time.delay(100)  # Warten Sie eine halbe Sekunde
+                    self.field[r] = [(0, 0, 0, 0) for _ in range(Const.SCREEN_WIDTH // Const.BLOCK_SIZE)]  # Ändern Sie die Farbe der Zellen in der Reihe in Transparent
+                    self.draw()  # Zeichnen Sie das Spielfeld
+                    pygame.display.flip()  # Aktualisieren Sie den Bildschirm
+                    pygame.time.delay(100)  # Warten Sie eine halbe Sekunde
+
+                # Entfernen Sie die Reihe
                 del self.field[r]
                 self.field.insert(0, [None for _ in range(Const.SCREEN_WIDTH // Const.BLOCK_SIZE)])
                 removed_rows += 1  # Erhöhen Sie die Zählvariable um eins
-        return removed_rows  # Geben Sie die Anzahl der entfernten Reihen zur�ck
+        return removed_rows  # Geben Sie die Anzahl der entfernten Reihen zurück
+
 
     def draw(self):
         for r in range(len(self.field)):
@@ -119,3 +132,16 @@ class GameField:
     def print_field(self):
         for i, row in enumerate(self.field):
             print(f"Zeile {i}: {row}")
+            
+class SoundHandler:
+    def __init__(self):
+        self.block_down_sound = pygame.mixer.Sound('block_down.wav')
+        self.line_remove_sound = pygame.mixer.Sound('line_remove.wav')
+    # Spielen Sie den Soundeffekt ab, wenn eine Aktion ausgeführt wird
+    def action_performed(self, action):
+        if action == 'block_down':
+            self.block_down_sound.set_volume(0.5) # Lautstärke auf 50%
+            self.block_down_sound.play()
+        elif action == 'line_remove':
+            self.line_remove_sound.set_volume(0.5) # Lautstärke auf 50%
+            self.line_remove_sound.play()
