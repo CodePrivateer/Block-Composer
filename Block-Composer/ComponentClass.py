@@ -137,6 +137,9 @@ class SoundHandler:
     def __init__(self):
         self.block_down_sound = pygame.mixer.Sound('block_down.wav')
         self.line_remove_sound = pygame.mixer.Sound('line_remove.wav')
+        self.game_over_sound = pygame.mixer.Sound('game_over.wav')
+        self.game_start_sound = pygame.mixer.Sound('game_start.wav')
+        self.level_up_sound = pygame.mixer.Sound('level_up.wav')
     # Spielen Sie den Soundeffekt ab, wenn eine Aktion ausgeführt wird
     def action_performed(self, action):
         if action == 'block_down':
@@ -145,3 +148,12 @@ class SoundHandler:
         elif action == 'line_remove':
             self.line_remove_sound.set_volume(0.5) # Lautstärke auf 50%
             self.line_remove_sound.play()
+        elif action == 'game_start':
+            self.game_start_sound.set_volume(0.5) # Lautstärke auf 50%
+            self.game_start_sound.play()            
+        elif action == 'game_over':
+            self.game_over_sound.set_volume(0.5) # Lautstärke auf 50%
+            self.game_over_sound.play()
+        elif action == 'level_up':
+            self.level_up_sound.set_volume(0.5) # Lautstärke auf 50%
+            self.level_up_sound.play()
